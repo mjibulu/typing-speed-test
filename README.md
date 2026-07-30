@@ -31,18 +31,23 @@ The current stable releases of Chromium, Firefox, and Safari are supported.
 - Personal bests and history require localStorage; timed tests remain usable when storage is unavailable.
 - Download behaviour follows the browser's normal file-download settings.
 
-## Run locally
+## Clone and run locally
 
 Requirements:
 
-- Node.js 24.x
+- Git
+- Node.js 22.13.x or Node.js 24.x (recommended)
 - Corepack
 
 ```bash
+git clone https://github.com/mjibulu/typing-speed-test.git
+cd typing-speed-test
 corepack enable
 pnpm install --frozen-lockfile
 pnpm run dev
 ```
+
+The development server prints the local URL to open in your browser.
 
 ## Verify
 
