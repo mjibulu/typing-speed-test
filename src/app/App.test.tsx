@@ -18,7 +18,7 @@ describe("Typing Speed Test", () => {
     vi.useRealTimers();
   });
 
-  it("starts from typing and exposes independent reading controls", async () => {
+  it("starts from typing and exposes reading controls", async () => {
     const user = userEvent.setup();
     render(<App />);
 

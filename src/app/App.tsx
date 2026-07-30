@@ -52,9 +52,11 @@ export function App() {
           <summary>How to use this tool</summary>
           <div className="information-content">
             <ol>
-            <li>{"Choose a duration and difficulty, then select a passage or keep the current one."}</li>
-            <li>{"Focus the typing field and reproduce the displayed passage as accurately as possible."}</li>
-            <li>{"Review the result, restart the test, or download the summary when the timer finishes."}</li>
+            <li>{"Choose a duration and difficulty, then keep the current passage or request a new one."}</li>
+            <li>{"Adjust the passage font size, reading-area height, and focus mode before starting."}</li>
+            <li>{"Focus the typing field and reproduce the displayed passage; the timer starts with the first character."}</li>
+            <li>{"Follow the live character feedback, time, WPM, accuracy, and error counts while typing."}</li>
+            <li>{"When the test ends, review personal-best and history updates, then restart, download the summary, or clear saved results."}</li>
             </ol>
           </div>
         </details>

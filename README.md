@@ -4,15 +4,25 @@ Measure typing speed, accuracy, and errors with configurable timed passages, dis
 
 ## Features
 
-- Timed 15, 30, 60, and 120-second tests
-- WPM, accuracy, corrected-error, and uncorrected-error results
-- Difficulty, passage, font-size, and reading-area controls
-- Bounded local history and personal bests
-- Downloadable result summaries
+- Timed 15, 30, 60, and 120-second tests that begin with the first typed character
+- Easy, standard, and advanced passages with a new-passage control
+- Live timer, progress, word count, WPM, accuracy, corrected errors, and uncorrected errors
+- Character-level feedback while typing with paste prevention for fairer results
+- Adjustable font size and reading-area height plus an optional focus mode
+- Personal bests by duration and bounded recent-attempt history stored in the browser
+- Restart, clear-history, and downloadable result-summary controls
 
 ## Screenshot
 
 ![Typing Speed Test interface](./public/tool-preview.webp)
+
+## How to use
+
+1. Choose a duration and difficulty, then keep the current passage or request a new one.
+2. Adjust the passage font size, reading-area height, and focus mode before starting.
+3. Focus the typing field and reproduce the displayed passage; the timer starts with the first character.
+4. Follow the live character feedback, time, WPM, accuracy, and error counts while typing.
+5. When the test ends, review personal-best and history updates, then restart, download the summary, or clear saved results.
 
 ## Browser support and limitations
 
