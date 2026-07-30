@@ -2,12 +2,11 @@
 
 Typing Speed Test processes tool input locally in the browser.
 
-The upstream repository:
+This application:
 
 - Does not include analytics, advertising, or telemetry.
 - Does not upload tool input or output.
 - Does not require an account.
-- Does not require an eBURP endpoint or other remote API.
 - Tests primary workflows for unexpected external requests.
 
 ## Browser storage
@@ -18,6 +17,5 @@ This tool may store the following tool-specific keys locally: `typing-speed-test
 
 This tool uses: localStorage, Blob downloads. Availability may vary by browser.
 
-Forks and third-party deployments may be modified by their operators. Review
-the source and the deployed site's policies when using a build that is not
-published from this repository.
+Deployments may be modified by their operators. Review the source and the
+deployed site's policies before using a build from an unfamiliar source.
