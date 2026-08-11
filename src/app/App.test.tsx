@@ -24,12 +24,12 @@ describe("Typing Speed Test", () => {
 
     const passage = screen.getByLabelText("Text to type");
     const input = screen.getByRole("textbox", {
-      name: "Start typing to begin the timer",
+      name: "Start typing",
     });
     passage.scrollTop = 40;
 
     await user.selectOptions(screen.getByLabelText("Font size"), "2");
-    await user.selectOptions(screen.getByLabelText("Reading area height"), "2");
+    await user.selectOptions(screen.getByLabelText("Reading area"), "2");
     fireEvent.change(input, { target: { value: "The " } });
 
     expect(input).toHaveStyle({ fontSize: "1.25rem" });
@@ -45,7 +45,7 @@ describe("Typing Speed Test", () => {
     await user.click(screen.getByRole("button", { name: "15s" }));
     await user.click(screen.getByRole("button", { name: "Advanced" }));
     const input = screen.getByRole("textbox", {
-      name: "Start typing to begin the timer",
+      name: "Start typing",
     });
     fireEvent.paste(input, {
       clipboardData: { getData: () => "pasted text" },
@@ -66,7 +66,7 @@ describe("Typing Speed Test", () => {
     fireEvent.click(screen.getByRole("button", { name: "15s" }));
     fireEvent.change(
       screen.getByRole("textbox", {
-        name: "Start typing to begin the timer",
+        name: "Start typing",
       }),
       { target: { value: "The quick" } },
     );

@@ -1,0 +1,121 @@
+{
+  "tools": {
+    "text": {
+      "typing-speed-test": {
+        "tool": {
+          "setup": {
+            "heading": "Typing test",
+            "description": ""
+          },
+          "newPassage": "New passage",
+          "durationLabel": "Duration",
+          "durationAriaLabel": "Test duration",
+          "durationOptionLabel": "{value}s",
+          "remainingSecondsLabel": "{value}s",
+          "passages": {
+            "beginner": [
+              "A calm start helps you find a steady pace.",
+              "Keep your hands relaxed and look at the next word.",
+              "Small steps can lead to strong results over time.",
+              "Clear ideas are easier to read and remember.",
+              "The warm sun moved slowly across the quiet room.",
+              "Good habits grow when you practise them each day.",
+              "Take a short breath and let accuracy guide you.",
+              "Simple tools should make everyday work feel lighter."
+            ],
+            "standard": [
+              "Clear writing begins with a simple idea, but careful revision gives that idea a useful shape.",
+              "A quiet morning gives the mind room to work while small, consistent efforts build momentum.",
+              "Technology is most useful when it removes friction and helps people finish the task at hand.",
+              "The quickest route is not always a straight line; observation can reveal a better path.",
+              "Practice builds confidence through repetition, patience, and attention to an even rhythm.",
+              "Useful feedback explains what changed without distracting you from the next decision.",
+              "A well-organized workspace reduces hesitation and makes complex projects easier to resume.",
+              "Accuracy creates a foundation for speed because fewer corrections preserve your flow."
+            ],
+            "advanced": [
+              "At 09:45, the project lead asked, “Can we ship version 2.7 by Friday?”",
+              "Measure twice: a 12.5% variance across 48 samples may indicate a deeper issue.",
+              "The API returned status 429; retry after 1.5 seconds, then record the response.",
+              "Files named report_v3.csv, notes-final.md, and image@2x.webp require different handling.",
+              "Although the forecast improved, costs rose from £1,240 to £1,387.50 in Q3.",
+              "Use Ctrl+Shift+P, select “Format Document,” and verify each changed line.",
+              "A precise summary distinguishes cause, correlation, and coincidence; it does not blur them.",
+              "Before launch, test widths of 320px, 768px, and 1440px across supported browsers."
+            ]
+          },
+          "difficultyLabel": "Difficulty",
+          "difficultyAriaLabel": "Passage difficulty",
+          "difficulty": {
+            "beginner": {
+              "label": "Beginner",
+              "description": ""
+            },
+            "standard": {
+              "label": "Standard",
+              "description": ""
+            },
+            "advanced": {
+              "label": "Advanced",
+              "description": ""
+            }
+          },
+          "focusModeTitle": "Focus mode",
+          "focusModeHint": "Hide live scores",
+          "secondsRemainingAriaLabel": "{seconds} seconds remaining",
+          "statusComplete": "Complete",
+          "statusReady": "Ready",
+          "statusTimeLeft": "Time left",
+          "wordsPrepared": "{count} words",
+          "passageLabel": "Passage",
+          "passageScrollHint": "",
+          "fontSizeLabel": "Font size",
+          "fontSizeHelp": "",
+          "readingHeightLabel": "Reading area",
+          "passageHeight": {
+            "0": "Compact",
+            "1": "Comfortable",
+            "2": "Tall"
+          },
+          "textToTypeAriaLabel": "Text to type",
+          "startPrompt": "Start typing",
+          "completedPrompt": "Complete",
+          "typingPrompt": "Your typing",
+          "inputPlaceholder": "Start typing here…",
+          "pasteDisabledNotice": "Pasting is disabled.",
+          "resultsAriaLabel": "Typing results",
+          "results": {
+            "netWpm": "Net WPM",
+            "rawWpm": "Raw WPM",
+            "accuracy": "Accuracy",
+            "errors": "Errors",
+            "corrections": "Corrections"
+          },
+          "focusMessage": "Live scores hidden.",
+          "newPersonalBest": "New personal best",
+          "testComplete": "Test complete",
+          "personalBestForSetup": "Personal best",
+          "bestSummary": "<strong>{wpm} WPM</strong> · <strong>{accuracy}% accuracy</strong>",
+          "noBestYet": "Complete a test to set a personal best.",
+          "restart": "Restart",
+          "history": {
+            "heading": "Recent attempts",
+            "description": ""
+          },
+          "downloadCsv": "Download .csv",
+          "clearResults": "Clear results",
+          "table": {
+            "date": "Date",
+            "setup": "Setup",
+            "netWpm": "Net WPM",
+            "accuracy": "Accuracy",
+            "errors": "Errors",
+            "corrections": "Corrections"
+          },
+          "setupCell": "{duration}s · {difficulty}",
+          "emptyHistory": "No completed tests."
+        }
+      }
+    }
+  }
+}

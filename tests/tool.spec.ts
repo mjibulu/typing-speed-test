@@ -12,7 +12,7 @@ test("typing controls and active test stay local without forced scrolling", asyn
   await page.goto("/");
   await page.getByRole("button", { name: "15s" }).click();
   await page.getByLabel("Font size").selectOption("4");
-  await page.getByLabel("Reading area height").selectOption("0");
+  await page.getByLabel("Reading area").selectOption("0");
 
   const passage = page.getByLabel("Text to type");
   const manualScrollPosition = await passage.evaluate((element) => {
