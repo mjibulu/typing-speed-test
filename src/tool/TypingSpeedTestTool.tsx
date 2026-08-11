@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { RotateCcw, Shuffle } from "lucide-react";
+import { useLocale, useTranslations } from "use-intl";
 import { DownloadButton } from "../components/DownloadButton";
 import { calculateTypingStats, isBetterTypingResult, type TypingBest, } from "../lib/public-tools/typing-speed";
 const BESTS_STORAGE_KEY = "typing-speed-test:bests:v1";
@@ -12,55 +13,10 @@ const PASSAGE_FONT_SIZES = [
     { label: "24 px", value: "1.5rem" },
     { label: "28 px", value: "1.75rem" },
 ] as const;
-const PASSAGE_HEIGHTS = ["Compact", "Comfortable", "Tall"] as const;
-const DIFFICULTIES = {
-    beginner: {
-        label: "Beginner",
-        description: "Common words and simple punctuation",
-    },
-    standard: {
-        label: "Standard",
-        description: "Natural prose with varied rhythm",
-    },
-    advanced: {
-        label: "Advanced",
-        description: "Numbers, symbols, and denser punctuation",
-    },
-} as const;
-const SENTENCES: Record<Difficulty, readonly string[]> = {
-    beginner: [
-        "A calm start helps you find a steady pace.",
-        "Keep your hands relaxed and look at the next word.",
-        "Small steps can lead to strong results over time.",
-        "Clear ideas are easier to read and remember.",
-        "The warm sun moved slowly across the quiet room.",
-        "Good habits grow when you practise them each day.",
-        "Take a short breath and let accuracy guide you.",
-        "Simple tools should make everyday work feel lighter.",
-    ],
-    standard: [
-        "Clear writing begins with a simple idea, but careful revision gives that idea a useful shape.",
-        "A quiet morning gives the mind room to work while small, consistent efforts build momentum.",
-        "Technology is most useful when it removes friction and helps people finish the task at hand.",
-        "The quickest route is not always a straight line; observation can reveal a better path.",
-        "Practice builds confidence through repetition, patience, and attention to an even rhythm.",
-        "Useful feedback explains what changed without distracting you from the next decision.",
-        "A well-organized workspace reduces hesitation and makes complex projects easier to resume.",
-        "Accuracy creates a foundation for speed because fewer corrections preserve your flow.",
-    ],
-    advanced: [
-        "At 09:45, the project lead asked, “Can we ship version 2.7 by Friday?”",
-        "Measure twice: a 12.5% variance across 48 samples may indicate a deeper issue.",
-        "The API returned status 429; retry after 1.5 seconds, then record the response.",
-        "Files named report_v3.csv, notes-final.md, and image@2x.webp require different handling.",
-        "Although the forecast improved, costs rose from £1,240 to £1,387.50 in Q3.",
-        "Use Ctrl+Shift+P, select “Format Document,” and verify each changed line.",
-        "A precise summary distinguishes cause, correlation, and coincidence; it does not blur them.",
-        "Before launch, test widths of 320px, 768px, and 1440px across supported browsers.",
-    ],
-};
+const PASSAGE_HEIGHTS = ["0", "1", "2"] as const;
+const DIFFICULTIES = ["beginner", "standard", "advanced"] as const;
 type TestPhase = "idle" | "running" | "finished";
-type Difficulty = keyof typeof DIFFICULTIES;
+type Difficulty = (typeof DIFFICULTIES)[number];
 type PersonalBests = Partial<Record<string, TypingBest>>;
 interface TypingAttempt extends TypingBest {
     id: string;
@@ -103,15 +59,14 @@ function isTypingAttempt(value: unknown): value is TypingAttempt {
     const attempt = value as Partial<TypingAttempt>;
     return (typeof attempt.id === "string" &&
         typeof attempt.difficulty === "string" &&
-        attempt.difficulty in DIFFICULTIES &&
+        (DIFFICULTIES as readonly string[]).includes(attempt.difficulty) &&
         typeof attempt.corrections === "number" &&
         Number.isFinite(attempt.corrections) &&
         typeof attempt.rawWpm === "number" &&
         Number.isFinite(attempt.rawWpm) &&
         typeof attempt.completedPassage === "boolean");
 }
-function buildPassage(difficulty: Difficulty, duration: number, offset: number): string {
-    const sentences = SENTENCES[difficulty];
+function buildPassage(sentences: readonly string[], duration: number, offset: number): string {
     const minimumWords = Math.ceil((duration / 60) * 160) + 35;
     const selected: string[] = [];
     let wordCount = 0;
@@ -124,24 +79,26 @@ function buildPassage(difficulty: Difficulty, duration: number, offset: number):
     }
     return selected.join(" ");
 }
-function historyCsv(attempts: TypingAttempt[]): string {
+function historyCsv(attempts: TypingAttempt[], difficultyLabel: (value: Difficulty) => string): string {
     const rows = attempts.map((attempt) => [
         attempt.completedAt,
         attempt.duration,
-        DIFFICULTIES[attempt.difficulty].label,
+        difficultyLabel(attempt.difficulty),
         attempt.wpm,
         attempt.rawWpm,
         attempt.accuracy,
         attempt.errors,
         attempt.corrections,
-        attempt.completedPassage ? "yes" : "no",
+        attempt.completedPassage ? "true" : "false",
     ].join(","));
     return [
-        "completed_at,duration_seconds,difficulty,net_wpm,raw_wpm,accuracy_percent,uncorrected_errors,corrections,passage_completed",
+        "completed_at,duration_seconds,difficulty,net_wpm,raw_wpm,accuracy_percent,errors,corrections,completed_passage",
         ...rows,
     ].join("\n");
 }
 export function TypingSpeedTestTool() {
+    const locale = useLocale();
+    const t = useTranslations("tools.text.typing-speed-test.tool");
     const [duration, setDuration] = useState<(typeof DURATIONS)[number]>(30);
     const [difficulty, setDifficulty] = useState<Difficulty>("standard");
     const [passageIndex, setPassageIndex] = useState(0);
@@ -159,8 +116,10 @@ export function TypingSpeedTestTool() {
     const startedAtRef = useRef(0);
     const inputRef = useRef("");
     const phaseRef = useRef<TestPhase>("idle");
-    const passage = useMemo(() => buildPassage(difficulty, duration, passageIndex), [difficulty, duration, passageIndex]);
+    const passageSentences = useMemo(() => t.raw(`passages.${difficulty}`) as string[], [difficulty, t]);
+    const passage = useMemo(() => buildPassage(passageSentences, duration, passageIndex), [duration, passageIndex, passageSentences]);
     const activeStats = useMemo(() => calculateTypingStats(passage, input, elapsedMs), [elapsedMs, input, passage]);
+    const difficultyLabel = useCallback((value: Difficulty) => t(`difficulty.${value}.label`), [t]);
     useEffect(() => {
         const frame = window.requestAnimationFrame(() => {
             setBests(sanitizeBests(loadJsonObject<PersonalBests>(BESTS_STORAGE_KEY, {})));
@@ -280,102 +239,100 @@ export function TypingSpeedTestTool() {
       <section className="typing-setup" aria-labelledby="typing-setup-title">
         <div className="typing-setup-heading">
           <div>
-            <h2 id="typing-setup-title">Test setup</h2>
-            <p>
-              The passage is sized for the selected duration, so fast typists do
-              not run out of text.
-            </p>
+            <h2 id="typing-setup-title">{t("setup.heading")}</h2>
+            <p>{t("setup.description")}</p>
           </div>
           <button type="button" className="secondary-button" onClick={() => reset(true)} disabled={phase === "running"}>
-            <Shuffle size={16} aria-hidden="true"/> New passage
+            <Shuffle size={16} aria-hidden="true"/> {t("newPassage")}
           </button>
         </div>
         <div className="typing-toolbar">
           <div>
-            <span className="control-label">Duration</span>
-            <div className="segmented-control" role="group" aria-label="Test duration">
+            <span className="control-label">{t("durationLabel")}</span>
+            <div className="segmented-control" role="group" aria-label={t("durationAriaLabel")}>
               {DURATIONS.map((value) => (<button key={value} type="button" className={duration === value ? "active" : ""} aria-pressed={duration === value} disabled={phase === "running"} onClick={() => {
                 setDuration(value);
                 reset();
             }}>
-                  {value}s
+                  {t("durationOptionLabel", { value })}
                 </button>))}
             </div>
           </div>
           <div>
-            <span className="control-label">Difficulty</span>
-            <div className="segmented-control" role="group" aria-label="Passage difficulty">
-              {(Object.entries(DIFFICULTIES) as [
-            Difficulty,
-            (typeof DIFFICULTIES)[Difficulty]
-        ][]).map(([value, option]) => (<button key={value} type="button" className={difficulty === value ? "active" : ""} aria-pressed={difficulty === value} disabled={phase === "running"} title={option.description} onClick={() => {
+            <span className="control-label">{t("difficultyLabel")}</span>
+            <div className="segmented-control" role="group" aria-label={t("difficultyAriaLabel")}>
+              {DIFFICULTIES.map((value) => (<button key={value} type="button" className={difficulty === value ? "active" : ""} aria-pressed={difficulty === value} disabled={phase === "running"} title={t(`difficulty.${value}.description`)} onClick={() => {
                 setDifficulty(value);
                 reset();
             }}>
-                  {option.label}
+                  {t(`difficulty.${value}.label`)}
                 </button>))}
             </div>
           </div>
           <label className="checkbox-option typing-focus-toggle">
             <input type="checkbox" checked={focusMode} onChange={(event) => setFocusMode(event.target.checked)}/>
             <span>
-              <strong>Focus mode</strong>
-              <small>Hide live scores while typing</small>
+              <strong>{t("focusModeTitle")}</strong>
+              <small>{t("focusModeHint")}</small>
             </span>
           </label>
         </div>
       </section>
 
-      <div className="typing-progress" role="progressbar" aria-label={`${remainingSeconds} seconds remaining`} aria-valuemin={0} aria-valuemax={duration} aria-valuenow={Math.round(elapsedMs / 1000)}>
+      <div className="typing-progress" role="progressbar" aria-label={t("secondsRemainingAriaLabel", {
+            seconds: remainingSeconds,
+        })} aria-valuemin={0} aria-valuemax={duration} aria-valuenow={Math.round(elapsedMs / 1000)}>
         <div>
           <span>
             {phase === "finished"
-            ? "Complete"
+            ? t("statusComplete")
             : phase === "idle"
-                ? "Ready"
-                : "Time left"}
+                ? t("statusReady")
+                : t("statusTimeLeft")}
           </span>
-          <strong>{remainingSeconds}s</strong>
+          <strong>
+            {t("remainingSecondsLabel", { value: remainingSeconds })}
+          </strong>
         </div>
         <div className="typing-progress-track" aria-hidden="true">
           <span style={{ width: `${progress}%` }}/>
         </div>
         <span className="typing-passage-size">
-          {passageWords} words prepared
+          {t("wordsPrepared", { count: passageWords })}
         </span>
       </div>
 
       <div className="typing-passage-panel">
         <div className="typing-passage-toolbar">
           <div>
-            <strong>Passage</strong>
-            <span>Scroll only when you choose to.</span>
+            <strong>{t("passageLabel")}</strong>
+            <span>{t("passageScrollHint")}</span>
           </div>
           <div className="typing-display-controls">
             <div className="typing-display-control">
-              <label htmlFor="typing-font-size">Font size</label>
+              <label htmlFor="typing-font-size">{t("fontSizeLabel")}</label>
               <select id="typing-font-size" value={passageFontSize} onChange={(event) => setPassageFontSize(Number(event.target.value))} aria-describedby="typing-font-size-help">
                 {PASSAGE_FONT_SIZES.map((size, index) => (<option value={index} key={size.label}>
                     {size.label}
                   </option>))}
               </select>
               <span id="typing-font-size-help" className="sr-only">
-                Changes the text size in both typing areas.
+                {t("fontSizeHelp")}
               </span>
             </div>
             <div className="typing-display-control">
               <label htmlFor="typing-reading-height">
-                Reading area height
+                {t("readingHeightLabel")}
               </label>
               <select id="typing-reading-height" value={passageHeight} onChange={(event) => setPassageHeight(Number(event.target.value))}>
                 {PASSAGE_HEIGHTS.map((height, index) => (<option value={index} key={height}>
-                    {height}
+                    {t(`passageHeight.${height}`)}
                   </option>))}
               </select>
             </div>
           </div>
         </div>
-        <div className={`typing-passage passage-height-${passageHeight}`} style={{ fontSize: PASSAGE_FONT_SIZES[passageFontSize].value }} aria-label="Text to type" tabIndex={0}>
+        <div className={`typing-passage passage-height-${passageHeight}`} style={{ fontSize: PASSAGE_FONT_SIZES[passageFontSize].value }} aria-label={t("textToTypeAriaLabel")} tabIndex={0}>
           {Array.from(passage).map((character, index) => {
             const className = index >= input.length
                 ? index === input.length
@@ -394,10 +351,10 @@ export function TypingSpeedTestTool() {
       <label className="typing-input-label" htmlFor="typing-input">
         <span>
           {phase === "idle"
-            ? "Start typing to begin the timer"
+            ? t("startPrompt")
             : phase === "finished"
-                ? "Completed typing"
-                : "Your typing"}
+                ? t("completedPrompt")
+                : t("typingPrompt")}
         </span>
         <textarea id="typing-input" value={input} style={{ fontSize: PASSAGE_FONT_SIZES[passageFontSize].value }} onChange={(event) => handleInput(event.target.value)} onKeyDown={(event) => {
             if (phase === "running" &&
@@ -406,77 +363,74 @@ export function TypingSpeedTestTool() {
             }
         }} onPaste={(event) => {
             event.preventDefault();
-            setNotice("Pasting is disabled so the result reflects keyboard typing.");
-        }} disabled={phase === "finished"} rows={4} autoCapitalize="off" autoComplete="off" autoCorrect="off" spellCheck={false} placeholder="Start typing here…"/>
+            setNotice(t("pasteDisabledNotice"));
+        }} disabled={phase === "finished"} rows={4} autoCapitalize="off" autoComplete="off" autoCorrect="off" spellCheck={false} placeholder={t("inputPlaceholder")}/>
       </label>
       {notice ? (<p className="typing-notice" role="status">
           {notice}
         </p>) : null}
 
-      {!(focusMode && phase === "running") ? (<div className="typing-results" aria-label="Typing results">
+      {!(focusMode && phase === "running") ? (<div className="typing-results" aria-label={t("resultsAriaLabel")}>
           <div>
-            <span>Net WPM</span>
+            <span>{t("results.netWpm")}</span>
             <strong>{activeStats.wpm}</strong>
           </div>
           <div>
-            <span>Raw WPM</span>
+            <span>{t("results.rawWpm")}</span>
             <strong>{activeStats.rawWpm}</strong>
           </div>
           <div>
-            <span>Accuracy</span>
+            <span>{t("results.accuracy")}</span>
             <strong>{activeStats.accuracy}%</strong>
           </div>
           <div>
-            <span>Errors</span>
+            <span>{t("results.errors")}</span>
             <strong>{activeStats.errors}</strong>
           </div>
           <div>
-            <span>Corrections</span>
+            <span>{t("results.corrections")}</span>
             <strong>{corrections}</strong>
           </div>
-        </div>) : (<p className="typing-focus-message">
-          Live scores are hidden. Keep your attention on the passage.
-        </p>)}
+        </div>) : (<p className="typing-focus-message">{t("focusMessage")}</p>)}
 
       <div className="typing-summary" aria-live={phase === "finished" ? "polite" : "off"}>
         <div>
           <h2>
             {phase === "finished"
             ? newBest
-                ? "New personal best"
-                : "Test complete"
-            : "Personal best for this setup"}
+                ? t("newPersonalBest")
+                : t("testComplete")
+            : t("personalBestForSetup")}
           </h2>
           {currentBest ? (<p>
-              Your best {duration}-second{" "}
-              {DIFFICULTIES[difficulty].label.toLowerCase()} test is{" "}
-              <strong>{currentBest.wpm} net WPM</strong> at{" "}
-              <strong>{currentBest.accuracy}% accuracy</strong>. Stored only on
-              this device.
-            </p>) : (<p>
-              Complete this setup to save your first personal best on this
-              device.
-            </p>)}
+              {t.rich("bestSummary", {
+                duration,
+                difficulty: difficultyLabel(difficulty),
+                wpm: currentBest.wpm,
+                accuracy: currentBest.accuracy,
+                strong: (chunks) => <strong>{chunks}</strong>,
+            })}
+            </p>) : (<p>{t("noBestYet")}</p>)}
         </div>
         <button type="button" className="secondary-button" onClick={() => reset()}>
-          <RotateCcw size={16} aria-hidden="true"/> Restart
+          <RotateCcw size={16} aria-hidden="true"/> {t("restart")}
         </button>
       </div>
 
       <section className="typing-history" aria-labelledby="typing-history-title">
         <div className="typing-history-heading">
           <div>
-            <h2 id="typing-history-title">Recent attempts</h2>
-            <p>
-              Your latest 10 completed tests are stored only in this browser.
-            </p>
+            <h2 id="typing-history-title">{t("history.heading")}</h2>
+            <p>{t("history.description")}</p>
           </div>
           <div className="button-group">
-            <DownloadButton content={history.length ? historyCsv(history) : ""} filename="typing-test-history.csv" mimeType="text/csv;charset=utf-8" toolSlug="typing-speed-test">
-              Download .csv
+            <DownloadButton content={history.length
+            ? historyCsv(history, difficultyLabel)
+            : ""} filename="typing-test-history.csv" mimeType="text/csv;charset=utf-8" toolSlug="typing-speed-test">
+              {t("downloadCsv")}
             </DownloadButton>
             <button type="button" className="secondary-button" onClick={clearLocalResults} disabled={!history.length && !Object.keys(bests).length}>
-              Clear results
+              {t("clearResults")}
             </button>
           </div>
         </div>
@@ -484,22 +438,24 @@ export function TypingSpeedTestTool() {
             <table className="typing-history-table">
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>Setup</th>
-                  <th>Net WPM</th>
-                  <th>Accuracy</th>
-                  <th>Errors</th>
-                  <th>Corrections</th>
+                  <th>{t("table.date")}</th>
+                  <th>{t("table.setup")}</th>
+                  <th>{t("table.netWpm")}</th>
+                  <th>{t("table.accuracy")}</th>
+                  <th>{t("table.errors")}</th>
+                  <th>{t("table.corrections")}</th>
                 </tr>
               </thead>
               <tbody>
                 {history.map((attempt) => (<tr key={attempt.id}>
                     <td>
-                      {new Date(attempt.completedAt).toLocaleDateString()}
+                      {new Date(attempt.completedAt).toLocaleDateString(locale)}
                     </td>
                     <td>
-                      {attempt.duration}s ·{" "}
-                      {DIFFICULTIES[attempt.difficulty]?.label ?? "Standard"}
+                      {t("setupCell", {
+                    duration: attempt.duration,
+                    difficulty: difficultyLabel(attempt.difficulty),
+                })}
                     </td>
                     <td>{attempt.wpm}</td>
                     <td>{attempt.accuracy}%</td>
@@ -508,9 +464,7 @@ export function TypingSpeedTestTool() {
                   </tr>))}
               </tbody>
             </table>
-          </div>) : (<p className="empty-state">
-            Complete a test to start your attempt history.
-          </p>)}
+          </div>) : (<p className="empty-state">{t("emptyHistory")}</p>)}
       </section>
     </div>);
 }

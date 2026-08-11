@@ -24,7 +24,7 @@
 .typing-setup-heading h2,
 .typing-history-heading h2 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.9375rem;
 }
 
 .typing-setup-heading p,
@@ -62,7 +62,7 @@
 .typing-toolbar .control-label {
   color: var(--color-text-muted);
   font-size: 0.78rem;
-  font-weight: 650;
+  font-weight: var(--font-weight-medium);
 }
 
 .typing-focus-toggle {
@@ -78,7 +78,7 @@
 .typing-focus-toggle small {
   color: var(--color-text-muted);
   font-size: 0.74rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-regular);
 }
 
 .typing-toolbar .secondary-button,
@@ -106,7 +106,7 @@
   color: var(--color-text-muted);
   background: transparent;
   cursor: pointer;
-  font-weight: 650;
+  font-weight: var(--font-weight-medium);
 }
 
 .segmented-control button.active {
@@ -141,7 +141,7 @@
 }
 
 .typing-progress strong {
-  font-size: 1.3rem;
+  font-size: 1.11rem;
 }
 
 .typing-progress-track {
@@ -187,7 +187,7 @@
 }
 
 .typing-passage-toolbar strong {
-  font-size: 0.88rem;
+  font-size: 0.8rem;
 }
 
 .typing-passage-toolbar span {
@@ -210,7 +210,7 @@
   padding-inline: 0.15rem;
   color: var(--color-text-muted);
   font-size: 0.7rem;
-  font-weight: 650;
+  font-weight: var(--font-weight-medium);
 }
 
 .typing-display-control select {
@@ -281,7 +281,7 @@
   gap: 0.45rem;
   color: var(--color-text-muted);
   font-size: 0.84rem;
-  font-weight: 650;
+  font-weight: var(--font-weight-medium);
 }
 
 .typing-input-label textarea {
@@ -319,13 +319,13 @@
 }
 
 .typing-results > div + div {
-  border-left: 1px solid var(--color-border);
+  border-inline-start: 1px solid var(--color-border);
 }
 
 .typing-results span {
   color: var(--color-text-muted);
   font-size: 0.78rem;
-  font-weight: 650;
+  font-weight: var(--font-weight-medium);
   text-transform: uppercase;
 }
 
@@ -341,13 +341,13 @@
 }
 
 .typing-summary h2 {
-  font-size: 1rem;
+  font-size: 0.9375rem;
 }
 
 .typing-summary p {
   margin-top: 0.35rem;
   color: var(--color-text-muted);
-  font-size: 0.88rem;
+  font-size: 0.8rem;
   line-height: 1.55;
 }
 
@@ -381,7 +381,7 @@
 .typing-history-table td {
   padding: 0.65rem 0.7rem;
   border-bottom: 1px solid var(--color-border);
-  text-align: left;
+  text-align: start;
   white-space: nowrap;
 }
 
@@ -467,11 +467,11 @@
   }
 
 .typing-results > div + div {
-    border-left: 0;
+    border-inline-start: 0;
   }
 
 .typing-results > div:nth-child(even) {
-    border-left: 1px solid var(--color-border);
+    border-inline-start: 1px solid var(--color-border);
   }
 
 .typing-results > div:nth-child(n + 3) {
@@ -480,7 +480,7 @@
 
 .typing-results > div:last-child {
     grid-column: 1 / -1;
-    border-left: 0;
+    border-inline-start: 0;
   }
 
 .typing-history-heading .button-group {
@@ -527,7 +527,7 @@
 .typing-history-table td::before {
     color: var(--color-text-muted);
     font-size: 0.7rem;
-    font-weight: 650;
+    font-weight: var(--font-weight-medium);
     text-transform: uppercase;
   }
 

@@ -1,43 +1,28 @@
-# Typing Speed Test
+# **TITLE**
 
-Measure typing speed, accuracy, and errors with configurable timed passages, display controls, local personal bests, and downloadable results.
+**DESCRIPTION**
+
+[Features](#features) · [Usage](#usage) · [Run locally](#run-locally) · [Contributing](./.github/CONTRIBUTING.md) · [Licence](./LICENSE)
 
 ## Features
 
-- Timed 15, 30, 60, and 120-second tests that begin with the first typed character
-- Easy, standard, and advanced passages with a new-passage control
-- Live timer, progress, word count, WPM, accuracy, corrected errors, and uncorrected errors
-- Character-level feedback while typing with paste prevention for fairer results
-- Adjustable font size and reading-area height plus an optional focus mode
-- Personal bests by duration and bounded recent-attempt history stored in the browser
-- Restart, clear-history, and downloadable result-summary controls
+**FEATURE_LIST**
 
 ## Screenshot
 
-![Typing Speed Test interface](./public/tool-preview.webp)
+## Usage
 
-## How to use
+**HOW_TO_LIST**
 
-1. Choose a duration and difficulty, then keep the current passage or request a new one.
-2. Adjust the passage font size, reading-area height, and focus mode before starting.
-3. Focus the typing field and reproduce the displayed passage; the timer starts with the first character.
-4. Follow the live character feedback, time, WPM, accuracy, and error counts while typing.
-5. When the test ends, review personal-best and history updates, then restart, download the summary, or clear saved results.
+## Browser support
 
-## Browser support and limitations
+Works with current versions of Chrome/Chromium, Firefox, and Safari.
 
-The current stable releases of Chromium, Firefox, and Safari are supported.
+**BROWSER_SUPPORT_NOTES**
 
-- Personal bests and history require localStorage; timed tests remain usable when storage is unavailable.
-- Download behaviour follows the browser's normal file-download settings.
+## Run locally
 
-## Clone and run locally
-
-Requirements:
-
-- Git
-- Node.js 22.13.x or Node.js 24.x (recommended)
-- Corepack
+You’ll need Git, Corepack, and Node.js 22.13.x or 24.x.
 
 ```bash
 git clone https://github.com/mjibulu/typing-speed-test.git
@@ -47,52 +32,39 @@ pnpm install --frozen-lockfile
 pnpm run dev
 ```
 
-The development server prints the local URL to open in your browser.
+Open the local URL shown in the terminal.
 
-## Verify
-
-Fast checks:
+## Checks
 
 ```bash
 pnpm run check
-```
-
-Complete browser verification:
-
-```bash
 pnpm run verify
 ```
 
-## Build and host
+## Build
 
 ```bash
 pnpm run build
 ```
 
-Upload the contents of `dist/` to a static host. The application supports both
-root and subdirectory hosting and needs no environment variables.
+The production files are created in `dist/` and can be hosted on GitHub Pages, Netlify, Cloudflare Pages, Vercel, or any static host.
 
-The same output can be deployed with GitHub Pages, Netlify, Cloudflare Pages,
-Vercel static hosting, or an ordinary file upload.
+## Privacy
 
-## Data and network behaviour
+The app runs in your browser and does not include analytics, ads, or telemetry.
 
-The application ships without analytics or telemetry. Tool processing occurs
-in the browser, and the primary browser tests fail unexpected external
-requests. See [PRIVACY.md](./PRIVACY.md) for the storage and browser API
-inventory.
+**STORAGE_DESCRIPTION**
+
+**BROWSER_API_DESCRIPTION**
 
 ## Contributing
 
-Issues and pull requests are welcome. Read
-[CONTRIBUTING.md](./CONTRIBUTING.md) before submitting a change.
+Issues and pull requests are welcome. See the [contribution guide](./.github/CONTRIBUTING.md) before submitting changes.
 
 ## Credits
 
-Created by M. Jibulu for [eBURP](https://eburp.com/).
+Created by Mujeeb for [eBURP](https://eburp.com/).
 
 ## Licence
 
-Original code is available under the [MIT Licence](./LICENSE). Dependencies and
-assets retain their own licences; see
-[THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md).
+Licensed under the [MIT Licence](./LICENSE). Third-party dependencies keep their respective licences.
